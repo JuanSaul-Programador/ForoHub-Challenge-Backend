@@ -6,6 +6,7 @@ import com.juansaul.domain.model.Topico;
 import com.juansaul.domain.repository.CursoRepository;
 import com.juansaul.domain.repository.TopicoRepository;
 import com.juansaul.domain.repository.UsuarioRepository;
+import com.juansaul.web.dto.DatosActualizarTopico;
 import com.juansaul.web.dto.DatosRegistroTopico;
 import com.juansaul.web.dto.DatosRegistroTopicoResponse;
 
@@ -69,6 +70,38 @@ public class TopicoServiceImpl implements TopicoService {
                 .orElseThrow(() -> new EntityNotFoundException("Tópico no encontrado con ID: " + id));
 
         return topicoMapper.toDto(topico);
+    }
+
+    @Override
+    @Transactional
+    public DatosRegistroTopicoResponse actualizar(Long id, DatosActualizarTopico datos) {
+        var topico = topicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tópico no encontrado con ID: " + id));
+
+        var autor = usuarioRepository.findById(datos.idAutor())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + datos.idAutor()));
+
+        var curso = cursoRepository.findById(datos.idCurso())
+                .orElseThrow(() -> new EntityNotFoundException("Curso no encontrado con ID: " + datos.idCurso()));
+
+        if (!topico.getTitulo().equals(datos.titulo()) || !topico.getMensaje().equals(datos.mensaje())) {
+            if (topicoRepository.existsByTituloAndMensaje(datos.titulo(), datos.mensaje())) {
+                throw new IllegalArgumentException("Ya existe un tópico con el mismo título y mensaje");
+            }
+        }
+
+        Topico topicoActualizado = Topico.builder()
+                .id(topico.getId())
+                .titulo(datos.titulo())
+                .mensaje(datos.mensaje())
+                .fechaCreacion(topico.getFechaCreacion())
+                .status(datos.status())
+                .autor(autor)
+                .curso(curso)
+                .build();
+
+        topicoRepository.save(topicoActualizado);
+        return topicoMapper.toDto(topicoActualizado);
     }
 
     @Override

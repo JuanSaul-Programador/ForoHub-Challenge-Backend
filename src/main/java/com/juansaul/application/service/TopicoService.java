@@ -1,5 +1,6 @@
 package com.juansaul.application.service;
 
+import com.juansaul.web.dto.DatosActualizarTopico;
 import com.juansaul.web.dto.DatosRegistroTopico;
 import com.juansaul.web.dto.DatosRegistroTopicoResponse;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ public interface TopicoService {
     Page<DatosRegistroTopicoResponse> listar(String curso, Integer anio, Pageable paginacion);
 
     DatosRegistroTopicoResponse detallar(Long id);
+
+    DatosRegistroTopicoResponse actualizar(Long id, DatosActualizarTopico datos);
 
     void eliminar(Long id);
 }

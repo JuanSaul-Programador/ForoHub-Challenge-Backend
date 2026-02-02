@@ -1,6 +1,7 @@
 package com.juansaul.web.controller;
 
 import com.juansaul.application.service.TopicoService;
+import com.juansaul.web.dto.DatosActualizarTopico;
 import com.juansaul.web.dto.DatosRegistroTopico;
 import com.juansaul.web.dto.DatosRegistroTopicoResponse;
 import jakarta.validation.Valid;
@@ -43,6 +44,13 @@ public class TopicoController {
     @GetMapping("/{id}")
     public ResponseEntity<DatosRegistroTopicoResponse> detallar(@PathVariable Long id) {
         return ResponseEntity.ok(topicoService.detallar(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DatosRegistroTopicoResponse> actualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid DatosActualizarTopico datos) {
+        return ResponseEntity.ok(topicoService.actualizar(id, datos));
     }
 
     @DeleteMapping("/{id}")
